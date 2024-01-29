@@ -1,0 +1,62 @@
+/* styles.css */
+
+.instruction-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Adjust the alpha value for darkness */
+    backdrop-filter: blur(5px); /* Adjust the blur radius */
+    z-index: 999; /* Ensure the overlay is above other content */
+    display: none; /* Hide the overlay initially */
+}
+
+.instruction-window {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40vw;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: #333;
+    color: #fff;
+    border: 2px solid #fff;
+    z-index: 1000;
+}
+
+.instruction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-text {
+    font-size: 24px; /* Adjust the font size as needed */
+    font-weight: bold;
+    margin-right: 10px; /* Add some margin to separate from the close button */
+    flex-grow: 1; /* Allow the text to grow and push the close button to the right */
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.instruction-content {
+    margin-bottom: 20px;
+}
+
+.instruction-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#doNotShowCheckbox {
+    margin-right: 10px;
+}

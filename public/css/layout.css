@@ -1,0 +1,140 @@
+body {
+    margin: 0;
+    padding: 0;
+	box-sizing: border-box;
+}
+main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.canvasContainer{
+    width: 100vw;
+    min-height: 100vh;
+    background-color: #00151a; 
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+	justify-content: center;
+    flex-direction: row;
+}
+.button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* This adds equal spacing between buttons */
+  align-items: center; /* This centers buttons horizontally */
+  height: 100vh; /* Set the container height to the full viewport height */
+}
+.grid-Container {
+	flex: 1; /* Take all available vertical space in the container 	position: absolute;*/
+    display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+    align-items: center;
+
+}
+.help-button {
+  position: fixed;
+  top: 2.5vw;
+  right: 10px;
+  width: 2.5vw;
+  height: 2.5vw;
+  background-color: #3498db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.achievement-button {
+  position: fixed;
+  top: 5vw;
+  right: 10px;
+  width: 2.5vw;
+  height: 2.5vw;
+  background-color: #3498db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.help-icon {
+  color: #fff;
+  font-size: 20px;
+}
+.achievement-help-icon {
+  color: #ddd;
+  font-size: 20px;
+}
+
+.svgSprite{
+    width: 0;
+    height: 0;
+    display: hidden;
+}
+.questionContainer{
+    position: absolute;
+    top: 7vw;
+    left: 28vw;
+    color: white;
+}
+.hintContainer{
+    position: absolute;
+    top: 11vw;
+    left: 28vw;
+    color: white;
+}
+.tileBox{
+    position: absolute;
+    border: 2px solid white;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    top: 11vw;
+    left: 28vw;
+    visibility: hidden;
+    pointer-events: none;
+}
+.tileSlot{
+    margin: 10px;
+    visibility: hidden;
+}
+.tileFadeOut{
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+.musicContainer{
+    position: absolute;
+    top: 1vw;
+    right: 1vw;
+    display: flex;
+    z-index: 100;
+    margin: 0;
+}
+.musicButton{
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+    display: hidden;
+    width: 2vw;
+    height: 2vw;
+}
+.music-icon{
+    display: block;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.centered-icon {
+    display: block;
+    transform-origin: center center;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+}

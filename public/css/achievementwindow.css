@@ -1,0 +1,73 @@
+/* Styling for the achievement sidebar */
+.achievement-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0; /* Adjust as needed */
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transition: right 0.3s ease-out;
+    overflow-y: auto;
+    overflow-x: auto;
+
+    z-index: 1000;
+    border-radius: 10px; /* Add rounded corners */
+    display: flex;
+    flex-direction: column; /* Arrange children vertically */
+    align-items: flex-end;
+}
+
+
+/* Styling for the achievement icons container */
+.achievement-icons {
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Arrange icons vertically */
+    align-items: flex-end;
+}
+
+/* Styling for each individual achievement icon */
+.achievement-icon {
+    margin-bottom: 15px;
+    cursor: pointer;
+    width: 64;
+    height: 64;
+}
+
+/* Styling for the achievement details container */
+.achievement-details {
+    padding: 20px;
+    z-index: 1100;
+    position: fixed;
+    display: flex;
+    min-width: 200 px;
+    flex-direction: column; /* Arrange children vertically */
+    background-color: #fff;
+    visibility: hidden;
+}
+
+/* Styling for the achievement name */
+.achievement-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+
+}
+
+/* Styling for the achievement description */
+.achievement-description {
+    font-size: 14px;
+}
+
+/* Styling for the overlay */
+.achievement-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: transparent; /* Make it invisible */
+    z-index: 999; /* Set a z-index higher than the sidebar */
+}
+.achievement-icon.dimmed {
+  filter: grayscale(100%);
+}

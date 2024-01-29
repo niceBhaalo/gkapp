@@ -1,0 +1,63 @@
+.tile-Container {
+	flex: 1; /* Take all available vertical space in the container 	position: absolute;*/
+    display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+    align-items: center;
+	font-size: 1vw;
+}
+
+.tileOutline {
+    background-color: transparent;
+    color: white;
+	outline: 2px solid white;
+}
+
+.tile {
+	position: absolute;
+    background-color: blue;
+    color: white;
+	outline: 2px solid white;
+	font-size: 100%;
+	transition: transform 0.5s ease-in-out;
+	transform-origin: top left;
+    opacity: 1;
+}
+
+.correctlyPlaced {
+    background-color: #075c0c;
+    color: white;
+	outline: 2px solid white;
+}
+
+.incorrectlyPlaced {
+    background-color: #b55757;
+    color: red;
+	outline: 2px solid white;
+}	
+.transition-class {
+  transition: left 0.5s ease-in-out, top 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+.glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    opacity: 0;
+    animation: glow 2s infinite; /* Use the 'infinite' keyword to loop the animation */
+    transition: opacity 0.5s ease-in-out;
+}
+
+@keyframes glow {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}

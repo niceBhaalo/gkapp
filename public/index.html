@@ -1,0 +1,56 @@
+<html>
+<head>
+<title> Note-Taking </title>
+	<link rel="stylesheet" href="css/layout.css">
+	<link rel="stylesheet" href="css/buttons.css">
+	<link rel="stylesheet" href="css/tiles.css">
+	<link rel="stylesheet" href="css/mainmenu.css">
+	<link rel="stylesheet" href="css/instruction.css">
+	<link rel="stylesheet" href="css/achievementwindow.css">
+	<link rel="stylesheet" href="css/signup.css">
+	<link rel="stylesheet" href="css/confetti.css">
+	<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+	<object type="image/svg+xml" data="icons/achievementspritesheet2.svg" width="0" height="0" style="display:none;"></object>
+	<div id="symbols"></div>
+	<div id="musicContainer" class="musicContainer">
+		<audio id="backgroundMusic" loop>
+			<source src="sounds/music1.mp3" type="audio/mp3">
+		</audio>
+		<audio id="sfxSoundButton">
+			<source src="sounds/button1.mp3" type="audio/mp3">
+		</audio>
+		<audio id="sfxSoundTile">
+			<source src="sounds/tile1.mp3" type="audio/mp3">
+		</audio>
+		<audio id="sfxSuccess">
+			<source src="sounds/success1.mp3" type="audio/mp3">
+		</audio>
+		<audio id="sfxComplete">
+			<source src="sounds/completion1.mp3" type="audio/mp3">
+		</audio>
+		<audio id="sfxFailure">
+			<source src="sounds/failure1.mp3" type="audio/mp3">
+		</audio>
+		<button id="settings" class="musicButton"></button>
+		<button id="musicButton" class="musicButton"></button>
+		<button id="sfxButton" class="musicButton"></button>
+		</div>
+	<div id="topContainer" class="top-container"></div>
+
+	<div id="canvas" class="canvasContainer">
+	</div>
+	<div id="confettiContainer" class="confettiContainer"></div>
+
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+	<script type="module" src="dist/bundle.js" defer></script>
+	<meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+
+</body>
+
+
+</html>

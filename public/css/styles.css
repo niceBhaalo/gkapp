@@ -1,0 +1,72 @@
+* {
+  user-select: none;
+}
+.note-text-input {
+    width: 100%; 
+	background-color: transparent;
+    overflow-y: auto;
+	white-space: nowrap; /* Allow text to wrap */
+    overflow-x: hidden;
+	font-size: 1vw;
+	color: #ffffcc;
+	outline: none;
+	border: none;
+	resize: none;
+	caret-color:transparent
+}
+.note {
+    /* background-color: #f1f1f1; */
+	font-size: 1.5vw;
+	max-width: 30vw;
+    padding: 10px;
+    /*width: 200 px;
+	height: 400 px;*/
+    /* Center the note element */
+    position: fixed;
+    left: 53vw;
+    top: 0.05vw;
+	color: #ffffcc;
+	user-select:none;
+	outline: none;
+}
+.timer {
+	width: 5%;
+	height: 2.5%;
+	position: absolute;
+	top: 2.5%;
+	transform: translate(-50%, -50%);
+	transform-origin: center;
+	padding: 10px;
+	background-color: yellow;
+	color: black;
+	border: 2px solid black;
+	border-radius: 5px;
+	text-align: center;
+	text-decoration: none;
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+	transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.score{
+	width: 5%;
+	height: 2.5%;
+	position: absolute;
+	top: 2.5%;
+}
+.infoText{
+	color: yellow;
+	position: fixed;
+	transform-origin: top center;
+	font-size: 1.5vw;
+}
+.messageContainer {
+	position: fixed;
+	bottom: 0vw;
+	left: 0vw;
+}
+.messageText{
+	color: yellow;
+	position: relative;
+	transform-origin: top center;
+	font-size: 1.5vw;
+	transition: left 0.5s ease-in-out, top 0.5s ease-in-out;
+}

@@ -1,0 +1,74 @@
+.level-tile {
+    box-sizing: border-box;
+    width: 60vw;
+    border: 1px solid #ccc;
+    padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    border-radius: 10px; /* Add border-radius for rounded corners */
+	height: 10vh;
+}
+.level-tile:first-child {
+    margin-top: 20px; /* Adjust the top margin of the first .level-tile */
+}
+
+.level-tile:last-child {
+    margin-bottom: 20px; /* Adjust the bottom margin of the last .level-tile */
+}
+.level-tile-container {
+	display: flex;
+	flex-direction: column;
+}
+.level-name {
+	width: 15vw;
+	font-size: 2vh;
+	font-weight: bold;
+	margin-bottom: 10px;
+	color: white;
+}
+
+.level-icons {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+	margin-left: auto;
+}
+
+.level-scores {
+	margin-bottom: 10px;
+}
+
+.start-button {
+	background-color: #4CAF50;
+	color: white;
+	padding: 0px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 1 rem;
+	cursor: pointer;
+	margin-left: auto;
+	height: 5vh;
+	width: 5vw;
+}
+.resetButton {
+	background-color: yellow;
+	border: 2px solid black;
+	border-radius: 10px;
+	padding: 10px 15px;
+	color: black;
+	cursor: pointer;
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.link-style {
+    color: white;
+    text-decoration: underline;
+}
+
+.link-style:hover {
+    color: lightgray;
+}
