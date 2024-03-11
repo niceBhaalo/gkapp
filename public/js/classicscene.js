@@ -78,18 +78,18 @@ class ClassicMode{
 		this.startTimer();
 		
 		this.restartButton.addEventListener('click', () => {
-		buttonPressSound();
+			buttonPressSound();
 			window.removeEventListener('keydown', this.handleKeyDown);	
 			SceneManager.goToScene('classic');
 		});
 		this.exitButton.addEventListener('click', () => {
-		buttonPressSound();
+			buttonPressSound();
 			window.removeEventListener('keydown', this.handleKeyDown);
 			SceneManager.goToScene('menu');
 		});
 		
 		this.shuffleButton.addEventListener('click', () => {
-		buttonPressSound();
+			buttonPressSound();
 			const tilesArray = Array.from(this.tileContainer.children);
 			// Fisher-Yates Shuffle Algorithm
 			for (let i = tilesArray.length - 1; i > 0; i--) {

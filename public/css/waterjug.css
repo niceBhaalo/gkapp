@@ -1,0 +1,92 @@
+.jugContainer {
+	display: flex;
+	flex-direction: row;
+	width: 90vw;
+	height: 90vh;
+}
+.stepText {
+	color: pink;
+	font-size: 2vw;
+	align: center;
+}
+.jug {
+	display: flex;
+	flex-direction: column;
+	width: 15vw;
+	align-items: center;
+}
+.jugButton {
+	color: black;
+	font-size: 1vw;
+	background-color: pink;
+	padding: 2px;
+	border: 2px solid black;
+	border-radius: 5px;
+	width: 5vw;
+	height: 3vw;
+
+}
+.jugButton:active {
+	background-color: #999;
+}
+.jugSpace {
+	height: 20vw;
+	width: 8vw;
+	visibility: hidden;
+	position: relative;
+}
+.jugIcon {
+	display: flex;
+    position: absolute;
+    border-width: 0 5px 5px 5px; 
+    border-style: none solid solid solid; 
+    border-color: transparent white white white; 
+    background-color: grey;
+    bottom: 0;
+	height: 100%;
+	width: 100%;
+	visibility: visible;
+}
+.waterFill {
+	display: flex;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	background-color: blue;
+	height: 0%; /* Start with no water */
+	
+}
+
+.jugText {
+	display: flex;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	color: white;
+	font-size: 3vw;
+	justify-content: center;
+    align-items: center;
+}
+.jugIconSpace {
+	position: absolute;
+    width: 8vw;
+    bottom: 0;
+	visibility: hidden;
+}
+@keyframes fillJug {
+  from {
+    height: 0%;
+  }
+  to {
+    height: 100%; /* Adjust as needed */
+  }
+}
+@keyframes emptyJug {
+  from {
+    height: 100%;
+  }
+  to {
+    height: 0%; /* Adjust as needed */
+  }
+}

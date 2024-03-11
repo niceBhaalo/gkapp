@@ -84,29 +84,29 @@ function updateIconState(button, isOn, iconName) {
 }
 
 export function buttonPressSound(){
-    if(sfxIsOn){
+    buttonPressElement.currentTime = 0;  
+if(sfxIsOn){
         buttonPressElement.play();
     }
 }
 export function tilePressSound(){
-        if(sfxIsOn){
-    tilePressElement.play();
+    if(sfxIsOn){
+        tilePressElement.play();
     }
 }
 export function tileSuccessSound(){
     tileSuccessElement.currentTime = 0;
-
-        if(sfxIsOn){
-    tileSuccessElement.play();
+    if(sfxIsOn){
+        tileSuccessElement.play();
     }
 }
 export function gameCompleteSound(){
     if(sfxIsOn){
-    gameSuccessElement.play();
+        gameSuccessElement.play();
     }
 }
 export function tileFailureSound(){
-        if(sfxIsOn){
-    tileFailureElement.play();
+    if(sfxIsOn){
+        tileFailureElement.play();
     }
 }

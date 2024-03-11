@@ -3,12 +3,14 @@ import MainMenu from './mainmenu.js';
 import NameSymbols from './namesymbols.js';
 import NameElements from './nameelements.js';
 import PlaceElements from './dragelement.js';
+import JugPuzzle from './jugpuzzle.js';
 
 const menu = new MainMenu();
 const classic = new ClassicMode();
 const namesymbols = new NameSymbols();
 const nameelements = new NameElements();
 const placeelements = new PlaceElements();
+const jugpuzzle = new JugPuzzle();
 
 const modeInstances = {
     'classic': classic,
@@ -16,6 +18,7 @@ const modeInstances = {
     'namesymbols': namesymbols,
     'nameelements': nameelements,
     'placeelements': placeelements,
+    'jugpuzzle': jugpuzzle,
 };
 
 const levelConfig = {};
