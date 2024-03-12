@@ -90,3 +90,19 @@
     height: 0%; /* Adjust as needed */
   }
 }
+
+.resetButton2 {
+	background-color: #4CAF50;
+	color: white;
+	padding: 0px;
+	text-align: center;
+	text-decoration: none;
+	position: absolute;
+	font-size: 1 rem;
+	cursor: pointer;
+	margin-left: auto;
+	height: 5vh;
+	width: 10vw;
+	right: 1vw;
+	bottom: 1vw;
+}

@@ -48,11 +48,11 @@
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
-	font-size: 1 rem;
 	cursor: pointer;
 	margin-left: auto;
-	height: 5vh;
+	height: 80%;
 	width: 5vw;
+	border-radius: 5px;
 }
 .resetButton {
 	background-color: yellow;

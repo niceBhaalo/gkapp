@@ -1,5 +1,5 @@
 .tile-Container {
-	flex: 1; /* Take all available vertical space in the container 	position: absolute;*/
+	flex: 1; 
     display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
@@ -46,7 +46,7 @@
     height: 100%;
     background-color: #fff;
     opacity: 0;
-    animation: glow 2s infinite; /* Use the 'infinite' keyword to loop the animation */
+    animation: glow 2s infinite;
     transition: opacity 0.5s ease-in-out;
 }
 

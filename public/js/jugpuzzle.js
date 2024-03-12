@@ -20,6 +20,9 @@ class JugPuzzle{
 		templateContainer.innerHTML = templateHtml;
 		canvas.appendChild(templateContainer);
 
+		if (!localStorage.getItem('showInstruction'+ levelid)){
+			showInstruction(false, instructionHeading, instructionText, levelid);
+		}
 		var levelSelect = document.getElementById("levelSelect");
 
 		var levels = [
@@ -51,13 +54,24 @@ class JugPuzzle{
     		levelSelect.appendChild(option);
 
 		    var levelCompleted = localStorage.getItem(levels[i].name);
-			if (levelCompleted) {
+			console.log(levels[i].name);
+			console.log(levelCompleted);
+			if (levelCompleted === 'true') {
 				option.textContent += " ✓";
 			} else {
 				option.textContent += "  ";
 			}
 		}
-
+		const helpButton = document.getElementById('helpButton');
+		helpButton.addEventListener('click', function() {
+			showInstruction(true, instructionHeading, instructionText);
+		});	
+		const resetButton = document.getElementById('resetButton');
+		resetButton.addEventListener('click', function() {
+			for (var i=0; i < levels.length; i++) {
+				localStorage.setItem(levels[i].name, false);
+			}
+		});
 		this.setupPuzzle(levels[0]);
 	}
 	setupPuzzle(level){

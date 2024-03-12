@@ -21,12 +21,12 @@ main {
 .button-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* This adds equal spacing between buttons */
-  align-items: center; /* This centers buttons horizontally */
-  height: 100vh; /* Set the container height to the full viewport height */
+  justify-content: space-between; 
+  align-items: center; 
+  height: 100vh; 
 }
 .grid-Container {
-	flex: 1; /* Take all available vertical space in the container 	position: absolute;*/
+	flex: 1;
     display: flex;
 	flex-wrap: wrap;
 	justify-content: center;

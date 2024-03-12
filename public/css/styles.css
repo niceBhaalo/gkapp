@@ -5,7 +5,7 @@
     width: 100%; 
 	background-color: transparent;
     overflow-y: auto;
-	white-space: nowrap; /* Allow text to wrap */
+	white-space: nowrap; 
     overflow-x: hidden;
 	font-size: 1vw;
 	color: #ffffcc;
@@ -15,13 +15,9 @@
 	caret-color:transparent
 }
 .note {
-    /* background-color: #f1f1f1; */
 	font-size: 1.5vw;
 	max-width: 30vw;
     padding: 10px;
-    /*width: 200 px;
-	height: 400 px;*/
-    /* Center the note element */
     position: fixed;
     left: 53vw;
     top: 0.05vw;

@@ -1,0 +1,27 @@
+.startButton{
+	width: 10%;
+	height: 5%;
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	transform-origin: center;
+	padding: 10px;
+	background-color: yellow;
+	color: black;
+	border: 2px solid black;
+	border-radius: 5px;
+	text-align: center;
+	text-decoration: none;
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+	transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
+	font-size: 1vw;
+}
+.startButton:hover {
+	background-color: black;
+	color: yellow;
+	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+

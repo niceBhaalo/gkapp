@@ -2,10 +2,13 @@ import SceneManager from './scenemanager.js';
 import { removeAllChildren, isLoggedIn } from './utils.js';
 import { signUpButtons } from './signupbuttons.js';
 import { getLevelData, getAchievementsForLevel } from './fetchdatafromstorage.js';
-const canvas = document.getElementById('canvas');
-const topContainer = document.getElementById('topContainer');
+
 import { isAchievementComplete } from './achievementprogress.js';
 import { buttonPressSound } from './sounds.js';
+
+const canvas = document.getElementById('canvas');
+const topContainer = document.getElementById('topContainer');
+
 class MainMenu {
     init() {
         topContainer.style.display = 'block';
@@ -42,16 +45,14 @@ class MainMenu {
 
                     const existingTitle = document.getElementById(symbolId)?.querySelector('title');
 
-                // Update existing title element or create a new one
-                if (existingTitle) {
-                    existingTitle.textContent = achievement.short_description;
-                } else {
-                    const titleElement = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-                    console.log("Title not found");
-                    titleElement.textContent = achievement.short_description;
-                    // Append the title to the referenced symbol
-                    document.getElementById(symbolId)?.appendChild(titleElement);
-                }
+                    if (existingTitle) {
+                        existingTitle.textContent = achievement.short_description;
+                    } else {
+                        const titleElement = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                        console.log("Title not found");
+                        titleElement.textContent = achievement.short_description;
+                        document.getElementById(symbolId)?.appendChild(titleElement);
+                    }
                     if (!isAchievementComplete(achievement.internal_name)){
 			            svgContainer.classList.add('dimmed');
 		            }
@@ -78,7 +79,6 @@ class MainMenu {
         removeAllChildren(canvas);
         removeAllChildren(topContainer);
         topContainer.style.display = 'none';
-
     }
 }
 
