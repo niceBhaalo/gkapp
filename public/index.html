@@ -15,7 +15,7 @@
 </head>
 
 <body>
-	<object type="image/svg+xml" data="icons/achievementspritesheet2.svg" width="0" height="0" style="display:none;"></object>
+	<object type="image/svg+xml" data="icons/achievementspritesheet.svg" width="0" height="0" style="display:none;"></object>
 	<div id="symbols"></div>
 	<div id="musicContainer" class="musicContainer">
 		<audio id="backgroundMusic" loop>
@@ -36,14 +36,17 @@
 		<audio id="sfxFailure">
 			<source src="sounds/failure1.mp3" type="audio/mp3">
 		</audio>
+		<audio id="water">
+			<source src="sounds/water.mp3" type="audio/mp3">
+		</audio>
+
 		<button id="settings" class="musicButton"></button>
 		<button id="musicButton" class="musicButton"></button>
 		<button id="sfxButton" class="musicButton"></button>
 		</div>
 	<div id="topContainer" class="top-container"></div>
 
-	<div id="canvas" class="canvasContainer">
-	</div>
+	<div id="canvas" class="canvasContainer"></div>
 	<div id="confettiContainer" class="confettiContainer"></div>
 
 	<script src="https://apis.google.com/js/platform.js" async defer></script>

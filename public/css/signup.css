@@ -33,11 +33,12 @@
 }
 
 .top-container {
-  top: 10px;
-  right: 10px;
-  display: flex;
-    background-color: #00151a; 
-
+	top: 10px;
+	left: 10px;
+	width: 10vw;
+	display: flex;
+	z-index: 2;
+	position: absolute;
 }
 
 .sign-up-button {

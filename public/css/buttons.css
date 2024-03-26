@@ -21,7 +21,7 @@
 }
 .gameModeButton{
 	width: 7vw;
-	height: 2vw;
+	height: 5vh;
 	min-height: 18px;
 	position: relative;
 	transform-origin: left;
@@ -33,8 +33,6 @@
 	text-decoration: none;
 	cursor: pointer;
 	transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
-	align-items: center;
-	justify-content: center;
 	font-size: 1vw;
 }
 
@@ -52,6 +50,8 @@
 	flex-wrap: wrap;
 	justify-content: center;
     align-items: center;
+	width: 0;
+	height: 0;
 }
 
 .sideButtons {

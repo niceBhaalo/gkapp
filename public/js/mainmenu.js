@@ -42,7 +42,7 @@ class MainMenu {
                     const useElement = document.createElementNS('http://www.w3.org/2000/svg', 'use');
                     useElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', `#${symbolId}`);
                     svgContainer.appendChild(useElement);
-
+                    useElement.classList.add('svg-child');
                     const existingTitle = document.getElementById(symbolId)?.querySelector('title');
 
                     if (existingTitle) {

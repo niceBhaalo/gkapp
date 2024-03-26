@@ -23,11 +23,15 @@
 }
 
 .achievement-icon {
-    margin-bottom: 15px;
     cursor: pointer;
-    width: 64;
-    height: 64;
+    height: 100%;
+    padding: 0.5vh;
+    width: 5vw;
 }
+
+.svg-child {
+}
+
 
 .achievement-details {
     padding: 20px;

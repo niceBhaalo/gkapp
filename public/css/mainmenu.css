@@ -2,16 +2,16 @@
     box-sizing: border-box;
     width: 60vw;
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 1vh;
 	margin-top: 10px;
 	margin-bottom: 10px;
     display: flex;
     flex-direction: row;
     border-radius: 10px; /* Add border-radius for rounded corners */
-	height: 10vh;
+	height: 15vh;
 }
 .level-tile:first-child {
-    margin-top: 20px; /* Adjust the top margin of the first .level-tile */
+    margin-top: 2vw; /* Adjust the top margin of the first .level-tile */
 }
 
 .level-tile:last-child {
@@ -23,18 +23,19 @@
 }
 .level-name {
 	width: 15vw;
-	font-size: 2vh;
+	font-size: 3vh;
 	font-weight: bold;
-	margin-bottom: 10px;
 	color: white;
+	align-self: center;
+	justify-content: center;
 }
 
 .level-icons {
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 10px;
 	margin-left: auto;
+	height: 13vh;
+	width: 30vw;
 }
 
 .level-scores {
@@ -50,9 +51,12 @@
 	display: inline-block;
 	cursor: pointer;
 	margin-left: auto;
-	height: 80%;
+	height: 9vh;
 	width: 5vw;
 	border-radius: 5px;
+	top: 2vh;
+	position: relative;
+	font-size: 2vh;
 }
 .resetButton {
 	background-color: yellow;

@@ -1,19 +1,54 @@
 <div id="helpButton" class="help-button">    <span class="help-icon">i</span> </div>
 
-<select id="levelSelect" class="levelSelect">
+<div class="topDiv">
 
-</select>
+	<div id="levelSelectDiv" class = "levelSelectDiv">
+		<span class="levelSelectText">Level Select:</span>
+		<select id="levelSelect" class="levelSelect"></select>
+	</div>
 
-<div id="stepCounter" class="stepText"> Current Steps: 
-	<div id="steps" class="stepText">0</div>
+	<div class="targetBlock">
+		<div class="firstLine">
+			<span class="targetText">Make Exactly </span>
+			<span id="targetWaterLevel" class="targetText">0</span>
+			<span id="targetWaterPlural" class="targetText"></span>
+			<span class="targetText">of Water</span>
+		</div>
+		<br>
+		<div class="thirdLine">
+			<span class="targetText">in&nbsp;</span>
+			<span id="targetSteps" class="targetText">0</span>
+			<span class="targetText">&nbsp;steps</span>
+		</div>
+		<div class="secondLine">
+			<span id="difficultyText" class="targetText"></span>
+		</div>
+	</div>
+
 </div>
-
-
 
 <div id="jugContainer" class="jugContainer">
 
 </div>
+<div id="victoryIconsDiv" class = "victoryIconsDiv">
+	<svg id="simpleVictory" class="victoryIcon">
+		<use xlink:href=#simplevictory class="borrowedSVG"></use>
+	</svg>
+	<svg id="perfectVictory" class="victoryIcon">
+		<use xlink:href=#perfectvictory class="borrowedSVG"></use>
+	</svg>
+</div>
+<div class="stepBlock">
+	<div id="stepCounter" class="stepText"> Current Steps: 
+		<span id="steps" class="stepNumber">0</span>
+	</div>
+</div>
 
-
-
-<button id="resetButton" class="resetButton2">Reset Progress</div>
+<div class="navButtons">
+	<button id="restartButton" class="resetButton2">Restart Level</button>
+	<button id="mainMenuButton" class="resetButton2">Main Menu</button>	
+	<button id="resetButton" class="resetButton2">Delete Progress</button>
+</div>
+<div class="nextLevelDiv">
+	<button id="nextLevelButton" class="resetButton2">Next Level</button>
+</div>

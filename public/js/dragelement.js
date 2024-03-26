@@ -19,6 +19,9 @@ const instructionText = `
 
 const achievements = getAchievementsForLevel(levelid);
 class PlaceElements{
+	constructor() {
+		this.dragEnd = this.dragEnd.bind(this);
+	}
 	async init(){
 		this.mistakes = false;
 		this.discard = false;
@@ -84,11 +87,16 @@ class PlaceElements{
 			this.discard = true;
 			this.discardTiles();
 		});
-		window.addEventListener('keydown', this.handleKeyDown);		
+		window.addEventListener('keydown', this.handleKeyDown);	
+		this.addDragImplementation();
 	}
 	exit(){
 		removeAllChildren(canvas);
+				document.addEventListener('mouseup', this.dragEnd);
+		document.addEventListener('touchend', this.dragEnd);
 		clearInterval(this.timerInterval);
+
+
 	}
 	discardTiles(){
 		this.tilesArray = Array.from(this.tileContainer.children);
@@ -101,7 +109,6 @@ class PlaceElements{
 		this.tilesArray.forEach(tile => {
 			tile.classList.add('tileFadeOut');
 		});
-		console.log("Running");
 		setTimeout(() => {
 			this.tilesArray.forEach(tile => {
 				tile.classList.remove('tileFadeOut');
@@ -132,7 +139,6 @@ class PlaceElements{
 	displayTiles(){
 		this.tileBoxChildren.forEach((slot) => {
 			if (slot.dataset.filled !== 'true'){
-				console.log("Running Here");
 				const tile = this.tilesArray.shift();
 				if (tile){
 					moveTileToSlot(tile, slot);
@@ -222,7 +228,6 @@ class PlaceElements{
 			tileElement.dataset.source = elementData.elementSource;
 			tileElement.dataset.slot = '0';
 			this.tileContainer.appendChild(tileElement);
-			this.dragElement(tileElement);
 			currentTileNumber++;
 		});
 	}
@@ -252,48 +257,168 @@ class PlaceElements{
 		this.minutes = 0;
 		this.timerElement.textContent = '00:00:000';
 	}
-	dragElement(elmnt) {
-		this.pos1 = 0, this.pos2 = 0, this.pos3 = 0, this.pos4 = 0;
-		elmnt.style.cursor = 'grab'
-		elmnt.onmousedown = this.dragMouseDown.bind(this,elmnt);	
+
+	addDragImplementation() {
+		this.tileContainer.addEventListener('mousedown', this.handleTileClick.bind(this));
+		this.tileContainer.addEventListener('touchstart', this.handleTileClick.bind(this));
+		document.addEventListener('mouseup', this.dragEnd);
+		document.addEventListener('touchend', this.dragEnd);
 	}
-	dragMouseDown(elmnt, e) {
-		if (elmnt.dataset.correctlyPlaced === 'false'){
-			tilePressSound();
-			displayInfo(elmnt);
-			elmnt.style.cursor = 'grabbing'
-			e = e || window.event;
-			e.preventDefault();
-			this.pos3 = e.clientX;
-			this.pos4 = e.clientY;
-			if (elmnt.dataset.currentPos != 0){
-				this.snapPoints[elmnt.dataset.currentPos].occupied = false;
-				this.snapPoints[elmnt.dataset.currentPos].occupiedBy = 0;
-				elmnt.dataset.correctlyPlaced = false;
-				elmnt.dataset.currentPos = 0;
+
+	handleTileClick(event) {
+		console.log("handleTileClick Called");
+		const tile = event.target.closest('.tile');
+		if (!tile) return;
+    
+		this.showDisplayInfo(tile);
+		this.showingInfo = true;
+
+		if (this.draggingTile === tile) {
+			this.draggingTile = null;
+			tile.style.cursor = 'grab';
+			this.closeDragElement(tile, event);
+			if (this.showingInfo) {
+				this.stopDisplayInfo();
 			}
-			elmnt.classList.remove('correctlyPlaced');
-			elmnt.classList.remove('incorrectlyPlaced');
-			elmnt.parentElement.appendChild(elmnt);	
-			document.onmouseup = this.closeDragElement.bind(this,elmnt);
-			document.onmousemove = this.elementDrag.bind(this,elmnt);
-		} else if (elmnt.dataset.correctlyPlaced === 'true'){
-			document.onmousedown = this.showDisplayInfo.bind(this,elmnt);
-			document.onmouseup = this.stopDisplayInfo;
+			return;
+		}
+    
+		this.draggingTile = tile;
+		tile.style.cursor = 'grabbing';
+		this.dragStart(tile, event);
+	}
+
+	dragStart(tile, event) {
+	    this.dragStartTime = Date.now();
+
+		event.preventDefault();
+		if (tile.dataset.correctlyPlaced === 'false') {
+			this.dragging = true;
+			if (event.type === 'mousedown') {
+				this.handleDragStart(tile, event.clientX, event.clientY);
+			} else if (event.type === 'touchstart') {
+				const touch = event.touches[0];
+				this.handleDragStart(tile, touch.clientX, touch.clientY);
+			}
 		}
 	}
+
+	handleDragStart(elmnt, clientX, clientY) {
+		tilePressSound();
+		elmnt.pos3 = clientX;
+		elmnt.pos4 = clientY;
+
+		if (elmnt.dataset.currentPos !== '0') {
+			const currentPos = elmnt.dataset.currentPos;
+			this.snapPoints[currentPos].occupied = false;
+			this.snapPoints[currentPos].occupiedBy = 0;
+			elmnt.dataset.correctlyPlaced = false;
+			elmnt.dataset.currentPos = 0;
+		}
+
+		elmnt.classList.remove('correctlyPlaced', 'incorrectlyPlaced');
+		elmnt.parentElement.appendChild(elmnt);
+
+		elmnt.boundElementDrag = this.elementDrag.bind(this, elmnt);
+
+		document.addEventListener('touchmove', elmnt.boundElementDrag, { passive: false });
+		document.addEventListener('mousemove', elmnt.boundElementDrag, { passive: false });
+	}
+
 	elementDrag(elmnt, e) {
-		e = e || window.event;
+		if (!this.draggingTile) return;
+		elmnt.dragStarted = true;
 		e.preventDefault();
 		const vw = window.innerWidth;
 		const vh = window.innerHeight;
-		this.pos1 = this.pos3 - e.clientX;
-		this.pos2 = this.pos4 - e.clientY;
-		this.pos3 = e.clientX;
-		this.pos4 = e.clientY;
-		elmnt.style.left = ((elmnt.offsetLeft - this.pos1) / vw ) * 100 + "vw";
-		elmnt.style.top = ((elmnt.offsetTop - this.pos2) / vw ) * 100 + "vw";
+
+		if (e.type === 'touchmove' && e.touches.length === 1) {
+			const touch = e.touches[0];
+			elmnt.pos1 = touch.clientX - elmnt.pos3;
+			elmnt.pos2 = touch.clientY - elmnt.pos4;
+			elmnt.pos3 = touch.clientX;
+			elmnt.pos4 = touch.clientY;
+
+		} else if (e.type === 'mousemove') {
+			elmnt.pos1 = e.clientX - elmnt.pos3;
+			elmnt.pos2 = e.clientY - elmnt.pos4;
+			elmnt.pos3 = e.clientX;
+			elmnt.pos4 = e.clientY;
+		}
+		const newLeft = elmnt.offsetLeft + elmnt.pos1;
+		const newTop = elmnt.offsetTop + elmnt.pos2;
+		elmnt.style.left = (newLeft / vw) * 100 + "vw";
+		elmnt.style.top = (newTop / vw) * 100 + "vw";
 	}
+
+	dragEnd(event) {
+	console.log("DragEnd");
+	console.log(this.draggingTile);
+		if (this.draggingTile) {
+		    const halfSecondPassed = (Date.now() - this.dragStartTime) > 500;
+			if (this.draggingTile.dragStarted === true || halfSecondPassed) {
+				if (this.draggingTile.dataset.correctlyPlaced === 'false' && this.dragging) {
+					this.closeDragElement(this.draggingTile, event);
+					this.stopDisplayInfo();
+				}
+			} 
+		}
+	}
+
+	closeDragElement(elmnt, e) {
+		e.preventDefault();
+		this.draggingTile = null;
+		elmnt.dragStarted = false;
+		this.dragging = false;
+
+		const keysArray = Object.keys(this.snapPoints);
+		removeAllChildren(elmnt);
+		removeAllChildren(document.getElementById('infoContainer'));
+		const rect = elmnt.getBoundingClientRect();
+		const targetSlot = document.getElementById(elmnt.dataset.slot);
+
+		for (const key of keysArray) {
+			const point = this.snapPoints[key];
+			if (Math.abs(parseFloat(elmnt.style.left) - parseFloat(point.x)) < 1.5 && Math.abs(parseFloat(elmnt.style.top) - parseFloat(point.y)) < 1.5 && point.occupied === false) {
+				elmnt.style.left = point.x;
+				elmnt.style.top = point.y;
+				elmnt.dataset.placed = true;
+				point.occupied = true;
+				point.occupiedBy = elmnt.elementID;
+				elmnt.dataset.currentPos = key;
+				if (elmnt.dataset.currentPos === elmnt.dataset.elementID){
+					elmnt.dataset.correctlyPlaced = true;
+					elmnt.style.cursor = 'default';
+					elmnt.classList.add('correctlyPlaced');
+					elmnt.dataset.slot = '0';
+					targetSlot.dataset.filled = 'false';
+					this.displayTiles();
+					this.updateScore();
+					tileSuccessSound();
+					elmnt.classList.remove('incorrectlyPlaced');
+				} else {
+					elmnt.dataset.correctlyPlaced = false;
+					elmnt.classList.remove('correctlyPlaced');
+					elmnt.classList.add('incorrectlyPlaced');
+					this.mistakes = true;
+					elmnt.style.cursor = 'grab';
+					tileFailureSound();
+				}
+				break;
+			} else {
+				elmnt.dataset.currentPos = 0;
+				elmnt.dataset.correctlyPlaced = false;
+				elmnt.dataset.placed = false;
+				elmnt.style.cursor = 'grab';				
+			}
+		}
+		if (elmnt.dataset.placed === 'false'){
+			moveTileToSlot(elmnt, targetSlot);
+		}
+		document.removeEventListener('mousemove', elmnt.boundElementDrag);
+		document.removeEventListener('touchmove', elmnt.boundElementDrag);
+	}
+
 	updateScore(){
 		this.scoreElement.dataset.current = parseInt(this.scoreElement.dataset.current) + 1;
 		this.scoreElement.textContent = this.scoreElement.dataset.current + '/' + this.scoreElement.dataset.total;
@@ -329,67 +454,8 @@ class PlaceElements{
 		}
 
 	}
-	closeDragElement(elmnt) {
-		const keysArray = Object.keys(this.snapPoints);
-		removeAllChildren(elmnt);
+	stopDisplayInfo(elmnt){
 		removeAllChildren(document.getElementById('infoContainer'));
-		const rect = elmnt.getBoundingClientRect();
-		console.log("Closing Drag Element");
-		const targetSlot = document.getElementById(elmnt.dataset.slot);
-
-		for (const key of keysArray) {
-			const point = this.snapPoints[key];
-			if (Math.abs(parseFloat(elmnt.style.left) - parseFloat(point.x)) < 1.5 && Math.abs(parseFloat(elmnt.style.top) - parseFloat(point.y)) < 1.5 && point.occupied === false) {
-				elmnt.style.left = point.x;
-				elmnt.style.top = point.y;
-				elmnt.dataset.placed = true;
-				point.occupied = true;
-				point.occupiedBy = elmnt.elementID;
-				elmnt.dataset.currentPos = key;
-				console.log('Running If');
-				if (elmnt.dataset.currentPos === elmnt.dataset.elementID){
-					elmnt.dataset.correctlyPlaced = true;
-					elmnt.style.cursor = 'default';
-					if (checkState === true){  
-						elmnt.classList.add('correctlyPlaced');
-						elmnt.dataset.slot = '0';
-						targetSlot.dataset.filled = 'false';
-						this.displayTiles();
-						this.updateScore();
-						tileSuccessSound();
-						elmnt.classList.remove('incorrectlyPlaced');
-						this.mouseInput = true;
-					}
-				} else {
-					elmnt.dataset.correctlyPlaced = false;
-					if (checkState === true){
-						elmnt.classList.remove('correctlyPlaced');
-						elmnt.classList.add('incorrectlyPlaced');
-						this.mistakes = true;
-						elmnt.style.cursor = 'grab';
-						tileFailureSound();
-					}
-				}
-				break;
-			} else {
-				elmnt.dataset.currentPos = 0;
-				elmnt.dataset.correctlyPlaced = false;
-				elmnt.dataset.placed = false;
-				elmnt.style.cursor = 'grab';				
-			}
-		}
-		console.log(elmnt.dataset.placed);
-		if (elmnt.dataset.placed === 'false'){
-			moveTileToSlot(elmnt, targetSlot);
-			console.log("Not Placed")
-		}
-		document.onmouseup = null;
-		document.onmousemove = null;
-	}
-	stopDisplayInfo (){
-		removeAllChildren(document.getElementById('infoContainer'));
-		document.onmouseup = null;
-		document.onmousedown = null;
 	}
 	showDisplayInfo (elmnt){
 		displayInfo(elmnt);
@@ -404,22 +470,27 @@ function moveTileToSlot(tile, slot) {
     const tileRect = tile.getBoundingClientRect();
     const slotRect = slot.getBoundingClientRect();
 
-    const offsetX = slotRect.left - tileRect.left;
-    const offsetY = slotRect.top - tileRect.top;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    const offsetX = ((slotRect.left - tileRect.left) / viewportWidth) * 100;
+    const offsetY = ((slotRect.top - tileRect.top) / viewportHeight) * 100;
 
     // Apply transform for animation
     tile.style.transition = 'transform 0.3s ease'; // Adjust the duration and easing as needed
-    tile.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-	tile.dataset.slot = slot.id;
+    tile.style.transform = `translate(${offsetX}vw, ${offsetY}vh)`;
+    tile.dataset.slot = slot.id;
+
     // After the animation, set the final position without transform
     setTimeout(() => {
         tile.style.transition = 'none'; // Remove transition for immediate position update
         tile.style.transform = 'translate(0, 0)';
-        tile.style.left = slotRect.left + 'px';
-        tile.style.top = slotRect.top + 'px';
+        tile.style.left = `${(slotRect.left / viewportWidth) * 100}vw`;
+        tile.style.top = `${(slotRect.top / viewportHeight) * 100}vh`;
         tile.style.visibility = 'visible';
         slot.dataset.filled = 'true';
     }, 300); // Adjust the time to match the transition duration
 }
+
 
 export default PlaceElements;

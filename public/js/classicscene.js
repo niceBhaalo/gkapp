@@ -23,6 +23,10 @@ class ClassicMode{
 	constructor(){
 		this.handleKeyDown = this.handleKeyDown.bind(this);
 		this.textBoxOpen = false;
+		this.dragEnd = this.dragEnd.bind(this);
+		this.handleTileClick = this.handleTileClick.bind(this);
+
+		
 	}
 	async init(){
 		({ tilesData, elementNames } = getTileData());
@@ -34,7 +38,7 @@ class ClassicMode{
 		this.solution = [];
 		const templateContainer = document.createElement('div');
 		templateContainer.innerHTML = templateHtml;
-		canvas.appendChild(templateContainer);
+		canvas.innerHTML = templateHtml;
 
 		this.mouseInput = false;
 		this.buttonContainer = document.getElementById('buttonContainer');
@@ -74,7 +78,7 @@ class ClassicMode{
 		this.milliseconds = 0;
 		this.seconds = 0;
 		this.minutes = 0;
-
+		this.shuffleTiles();
 		this.startTimer();
 		
 		this.restartButton.addEventListener('click', () => {
@@ -88,27 +92,25 @@ class ClassicMode{
 			SceneManager.goToScene('menu');
 		});
 		
+		// Define the shuffleTiles function
+
+
+		// Add event listener for shuffleButton
 		this.shuffleButton.addEventListener('click', () => {
 			buttonPressSound();
-			const tilesArray = Array.from(this.tileContainer.children);
-			// Fisher-Yates Shuffle Algorithm
-			for (let i = tilesArray.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1));
-				[tilesArray[i], tilesArray[j]] = [tilesArray[j], tilesArray[i]];
-			}
-			let currentTileNumber = 1;
-			for (const tile of tilesArray) {
-			  if (tile.dataset.placed === 'false') {
-				setTilePosition(tile, currentTileNumber);
-				this.tileContainer.appendChild(tile);
-				currentTileNumber++;
-			  }
-			}
+			this.shuffleTiles.call(this); // Call shuffleTiles function within the context of 'this'
 		});
-		window.addEventListener('keydown', this.handleKeyDown);		
+		window.addEventListener('keydown', this.handleKeyDown);	
+		this.addDragImplementation();
 	}
 	exit(){
 		this.removeNoteElement();
+		this.tileContainer.removeEventListener('mouseup', this.dragEnd);
+		this.tileContainer.removeEventListener('touchend', this.dragEnd);
+		this.tileContainer.removeEventListener('mousedown', this.handleTileClick);
+		this.tileContainer.removeEventListener('touchstart', this.handleTileClick);
+
+		
 		removeAllChildren(canvas);
 		clearInterval(this.timerInterval);
 		window.removeEventListener('keydown', this.handleKeyDown);
@@ -270,7 +272,7 @@ class ClassicMode{
 			tileElement.dataset.period = elementData.period;
 			tileElement.dataset.source = elementData.elementSource;
 			this.tileContainer.appendChild(tileElement);
-			this.dragElement(tileElement);
+			//this.dragElement(tileElement);
 			currentTileNumber++;
 			// Creating Column Toggle buttonsContainer
 			if (rowElementsSet.has(parseInt(elementData.an))){
@@ -367,48 +369,181 @@ class ClassicMode{
 		this.minutes = 0;
 		this.timerElement.textContent = '00:00:000';
 	}
-	dragElement(elmnt) {
-		this.pos1 = 0, this.pos2 = 0, this.pos3 = 0, this.pos4 = 0;
-		elmnt.style.cursor = 'grab'
-		elmnt.onmousedown = this.dragMouseDown.bind(this,elmnt);	
+
+	addDragImplementation() {
+		this.tileContainer.addEventListener('mousedown', this.handleTileClick);
+		this.tileContainer.addEventListener('touchstart', this.handleTileClick, {passive: false});
+		this.tileContainer.addEventListener('mouseup', this.dragEnd);
+		this.tileContainer.addEventListener('touchend', this.dragEnd);
 	}
-	dragMouseDown(elmnt, e) {
-	tilePressSound();
-		if (elmnt.dataset.correctlyPlaced === 'false'){
-			displayInfo(elmnt);
-			elmnt.style.cursor = 'grabbing'
-			e = e || window.event;
-			e.preventDefault();
-			this.pos3 = e.clientX;
-			this.pos4 = e.clientY;
-			if (elmnt.dataset.currentPos != 0){
-				this.snapPoints[elmnt.dataset.currentPos].occupied = false;
-				this.snapPoints[elmnt.dataset.currentPos].occupiedBy = 0;
-				elmnt.dataset.correctlyPlaced = false;
-				elmnt.dataset.currentPos = 0;
+
+	handleTileClick(event) {
+		event.preventDefault();
+		const tile = event.target.closest('.tile');
+		if (!tile) return;
+    
+		this.showDisplayInfo(tile);
+		this.showingInfo = true;
+
+		if (tile.dataset.correctlyPlaced === 'true') return;
+		if (this.draggingTile === tile) {
+			this.draggingTile = null;
+			tile.style.cursor = 'grab';
+			this.closeDragElement(tile, event);
+			if (this.showingInfo) {
+				this.stopDisplayInfo();
 			}
-			elmnt.classList.remove('correctlyPlaced');
-			elmnt.classList.remove('incorrectlyPlaced');
-			elmnt.parentElement.appendChild(elmnt);	
-			document.onmouseup = this.closeDragElement.bind(this,elmnt);
-			document.onmousemove = this.elementDrag.bind(this,elmnt);
-		} else if (elmnt.dataset.correctlyPlaced === 'true'){
-			document.onmousedown = this.showDisplayInfo.bind(this,elmnt);
-			document.onmouseup = this.stopDisplayInfo;
+			return;
+		}
+    
+		this.draggingTile = tile;
+		tile.style.cursor = 'grabbing';
+		this.dragStart(tile, event);
+	}
+
+	dragStart(tile, event) {
+	    this.dragStartTime = Date.now();
+
+		event.preventDefault();
+		if (tile.dataset.correctlyPlaced === 'false') {
+			this.dragging = true;
+			if (event.type === 'mousedown') {
+				this.handleDragStart(tile, event.clientX, event.clientY);
+			} else if (event.type === 'touchstart') {
+				const touch = event.touches[0];
+				this.handleDragStart(tile, touch.clientX, touch.clientY);
+			}
 		}
 	}
+
+	handleDragStart(elmnt, clientX, clientY) {
+		tilePressSound();
+		elmnt.pos3 = clientX;
+		elmnt.pos4 = clientY;
+		elmnt.initialOffsetX = clientX - elmnt.getBoundingClientRect().left;
+		elmnt.initialOffsetY = clientY - elmnt.getBoundingClientRect().top;
+		if (elmnt.dataset.currentPos !== '0') {
+			const currentPos = elmnt.dataset.currentPos;
+			this.snapPoints[currentPos].occupied = false;
+			this.snapPoints[currentPos].occupiedBy = 0;
+			elmnt.dataset.correctlyPlaced = false;
+			elmnt.dataset.currentPos = 0;
+		}
+
+		elmnt.classList.remove('correctlyPlaced', 'incorrectlyPlaced');
+		elmnt.parentElement.appendChild(elmnt);
+
+		elmnt.boundElementDrag = this.elementDrag.bind(this, elmnt);
+
+		document.addEventListener('touchmove', elmnt.boundElementDrag, { passive: false });
+		document.addEventListener('mousemove', elmnt.boundElementDrag, { passive: false });
+	}
+
 	elementDrag(elmnt, e) {
-		e = e || window.event;
+		if (!this.draggingTile) return;
+		elmnt.dragStarted = true;
 		e.preventDefault();
 		const vw = window.innerWidth;
-		const vh = window.innerHeight;
-		this.pos1 = this.pos3 - e.clientX;
-		this.pos2 = this.pos4 - e.clientY;
-		this.pos3 = e.clientX;
-		this.pos4 = e.clientY;
-		elmnt.style.left = ((elmnt.offsetLeft - this.pos1) / vw ) * 100 + "vw";
-		elmnt.style.top = ((elmnt.offsetTop - this.pos2) / vw ) * 100 + "vw";
+
+		if (e.type === 'touchmove' && e.touches.length === 1) {
+			const touch = e.touches[0];
+			console.log("I am called");
+			// Calculate new left and top positions based on touch coordinates and initial offset
+			const newLeft = touch.clientX - elmnt.initialOffsetX;
+			const newTop = touch.clientY - elmnt.initialOffsetY;
+
+			// Update the element's style
+			elmnt.style.left = (newLeft / vw) * 100 + "vw";
+			elmnt.style.top = (newTop / vw) * 100 + "vw";
+		} else if (e.type === 'mousemove') {
+			// The mousemove part remains unchanged
+			elmnt.pos1 = e.clientX - elmnt.pos3;
+			elmnt.pos2 = e.clientY - elmnt.pos4;
+			elmnt.pos3 = e.clientX;
+			elmnt.pos4 = e.clientY;
+
+			// Calculate new left and top positions based on mouse movement
+			const newLeft = elmnt.offsetLeft + elmnt.pos1;
+			const newTop = elmnt.offsetTop + elmnt.pos2;
+
+			// Update the element's style
+			elmnt.style.left = (newLeft / vw) * 100 + "vw";
+			elmnt.style.top = (newTop / vw) * 100 + "vw";
+		}
 	}
+
+	dragEnd(event) {
+		if (this.draggingTile) {
+		    const halfSecondPassed = (Date.now() - this.dragStartTime) > 500; // 500 milliseconds = 0.5 seconds
+
+			if (this.draggingTile.dragStarted === true || halfSecondPassed) {
+				if (this.draggingTile.dataset.correctlyPlaced === 'false' && this.dragging) {
+					this.closeDragElement(this.draggingTile, event);
+					this.stopDisplayInfo();
+				}
+			} 
+		} else if (this.showingInfo) {
+				this.stopDisplayInfo();
+		}
+	}
+
+
+	closeDragElement(elmnt, e) {
+		this.draggingTile = null;
+		elmnt.dragStarted = false;
+		this.dragging = false;
+		e.preventDefault();
+		const keysArray = Object.keys(this.snapPoints);
+		removeAllChildren(elmnt);
+		removeAllChildren(document.getElementById('infoContainer'));
+
+		for (const key of keysArray) {
+			const point = this.snapPoints[key];
+
+			if (Math.abs(parseFloat(elmnt.style.left) - parseFloat(point.x)) < 1.5 &&
+				Math.abs(parseFloat(elmnt.style.top) - parseFloat(point.y)) < 1.5 &&
+				!point.occupied) {
+
+				elmnt.style.left = point.x;
+				elmnt.style.top = point.y;
+				elmnt.dataset.placed = true;
+				point.occupied = true;
+				point.occupiedBy = elmnt.elementID;
+				elmnt.dataset.currentPos = key;
+
+				if (elmnt.dataset.currentPos === elmnt.dataset.elementID) {
+					elmnt.dataset.correctlyPlaced = true;
+					elmnt.style.cursor = 'default';
+					if (checkState) {
+						tileSuccessSound();
+						elmnt.classList.add('correctlyPlaced');
+						this.updateScore();
+						elmnt.classList.remove('incorrectlyPlaced');
+						this.mouseInput = true;
+						this.solution.push(parseInt(elmnt.dataset.elementID));
+					}
+				} else {
+					elmnt.dataset.correctlyPlaced = false;
+					if (checkState) {
+						elmnt.classList.remove('correctlyPlaced');
+						elmnt.classList.add('incorrectlyPlaced');
+						elmnt.style.cursor = 'grab';
+						tileFailureSound();
+					}
+				}
+				break;
+			} else {
+				elmnt.dataset.currentPos = 0;
+				elmnt.dataset.correctlyPlaced = false;
+				elmnt.dataset.placed = false;
+				elmnt.style.cursor = 'grab';
+				tilePressSound();
+			}
+		}
+		document.removeEventListener('touchmove', elmnt.boundElementDrag);
+		document.removeEventListener('mousemove', elmnt.boundElementDrag);
+	}
+
 	updateScore(){
 		this.scoreElement.dataset.current = parseInt(this.scoreElement.dataset.current) + 1;
 		this.scoreElement.textContent = this.scoreElement.dataset.current + '/' + this.scoreElement.dataset.total;
@@ -447,56 +582,9 @@ class ClassicMode{
 			}
 		}
 	}
-	closeDragElement(elmnt) {
-		tilePressSound();
-		const keysArray = Object.keys(this.snapPoints);
-		removeAllChildren(elmnt);
+	
+	stopDisplayInfo (elmnt){
 		removeAllChildren(document.getElementById('infoContainer'));
-		for (const key of keysArray) {
-			const point = this.snapPoints[key];
-			if (Math.abs(parseFloat(elmnt.style.left) - parseFloat(point.x)) < 1.5 && Math.abs(parseFloat(elmnt.style.top) - parseFloat(point.y)) < 1.5 && point.occupied === false) {
-				elmnt.style.left = point.x;
-				elmnt.style.top = point.y;
-				elmnt.dataset.placed = true;
-				point.occupied = true;
-				point.occupiedBy = elmnt.elementID;
-				elmnt.dataset.currentPos = key;
-				if (elmnt.dataset.currentPos === elmnt.dataset.elementID){
-					elmnt.dataset.correctlyPlaced = true;
-					elmnt.style.cursor = 'default';
-					if (checkState === true){  
-						tileSuccessSound();
-						elmnt.classList.add('correctlyPlaced');
-						this.updateScore();
-						elmnt.classList.remove('incorrectlyPlaced');
-						this.mouseInput = true;
-						this.solution.push(parseInt(elmnt.dataset.elementID));
-					}
-				}
-				else{
-					elmnt.dataset.correctlyPlaced = false;
-					if (checkState === true){
-						elmnt.classList.remove('correctlyPlaced');
-						elmnt.classList.add('incorrectlyPlaced');
-						elmnt.style.cursor = 'grab';
-					}
-				}
-				break;
-			}
-			else {
-				elmnt.dataset.currentPos = 0;
-				elmnt.dataset.correctlyPlaced = false;
-				elmnt.dataset.placed = false;
-				elmnt.style.cursor = 'grab'
-			}
-		}
-		document.onmouseup = null;
-		document.onmousemove = null;
-	}
-	stopDisplayInfo (){
-		removeAllChildren(document.getElementById('infoContainer'));
-		document.onmouseup = null;
-		document.onmousedown = null;
 	}
 	showDisplayInfo (elmnt){
 		displayInfo(elmnt);
@@ -539,40 +627,64 @@ class ClassicMode{
 			this.messageContainer.dataset.occupants = parseInt(this.messageContainer.dataset.occupants) - 1;
 		}, 3000);
 	}
+	shuffleTiles() {
+		const tilesArray = Array.from(this.tileContainer.children);
+		// Fisher-Yates Shuffle Algorithm
+		for (let i = tilesArray.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[tilesArray[i], tilesArray[j]] = [tilesArray[j], tilesArray[i]];
+		}
+		let currentTileNumber = 1;
+		for (const tile of tilesArray) {
+			if (tile.dataset.placed === 'false') {
+				setTilePosition(tile, currentTileNumber);
+				this.tileContainer.appendChild(tile);
+				currentTileNumber++;
+			}
+		}
+	}
 }
-
-
-
 
 
 
 function setTilePosition(tileElement, currentTileNumber) {
-	const minimumTiles = 20;
-	const maximumTiles = 40;
-	let row = 0;
-	let column = ((currentTileNumber-1) % minimumTiles)* (85 / (minimumTiles - 1))+ 5;
-	let padding = 0;
-	if (currentTileNumber >= 1 && currentTileNumber <= minimumTiles) {
-		row = 75;
-	} else if (currentTileNumber >= minimumTiles + 1 && currentTileNumber <= minimumTiles * 2) {
-		row = 80;
-	} else if (currentTileNumber >= minimumTiles * 2 + 1 && currentTileNumber <= minimumTiles * 3) {
-		row = 85;
-	} else if (currentTileNumber >= minimumTiles * 3 + 1 && currentTileNumber <= minimumTiles * 4) {
-		row = 77.5;
-		padding = 2;
-	} else if (currentTileNumber >= minimumTiles * 4 + 1 && currentTileNumber <= minimumTiles * 5) {
-		row = 82.5;
-		padding = 2;
-	} else if (currentTileNumber >= minimumTiles * 5 + 1 && currentTileNumber <= minimumTiles * 6){
-		row = 87.5;
-		padding = 2;
-	} else {
-		row = Math.random() * (87.5 - 75) + 75;
-	}
-	tileElement.style.left = column + padding + 'vw';
-	tileElement.style.top = row + 5 + 'vh';
+	const outlineContainer = document.getElementById('gridContainer');
+	let overlaps;
+
+	do {
+		overlaps = false;
+
+		// Generate random position
+		const randomLeft = Math.random() * 87 + 5;
+		const randomBottom = Math.random() * 10 + 1;
+
+		// Set the position
+		tileElement.style.left = randomLeft + 'vw';
+		tileElement.style.bottom = randomBottom + 'vw';
+		tileElement.style.top = '';
+
+		// Check for overlap with existing children
+		for (const child of outlineContainer.children) {
+			const childRect = child.getBoundingClientRect();
+			const tileRect = tileElement.getBoundingClientRect();
+
+			// Check for overlap
+			if (
+				tileRect.left < childRect.right &&
+				tileRect.right > childRect.left &&
+				tileRect.top < childRect.bottom &&
+				tileRect.bottom > childRect.top
+			) {
+				overlaps = true;
+				break;
+			}
+		}
+	} while (overlaps);
+
 }
+
+
+
 
 function isAscendingOrder(list) {
   for (let i = 0; i < list.length - 1; i++) {
@@ -585,5 +697,11 @@ function isAscendingOrder(list) {
 
 function timeToMilliseconds(minutes, seconds, milliseconds){
 	return (minutes * 60 * 1000 + seconds * 1000 + milliseconds);
+}
+
+function handleDefault(e) {
+    if (e && e.preventDefault) {
+        e.preventDefault();
+    }
 }
 export default ClassicMode;

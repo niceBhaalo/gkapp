@@ -25,22 +25,33 @@
 	user-select:none;
 	outline: none;
 }
-.timer {
-	width: 5%;
-	height: 2.5%;
+.top-label {
+	display: flex;
+	height: 4vh;
 	position: absolute;
-	top: 2.5%;
+	top: 4vh;
 	transform: translate(-50%, -50%);
 	transform-origin: center;
-	padding: 10px;
 	background-color: yellow;
 	color: black;
 	border: 2px solid black;
 	border-radius: 5px;
-	text-align: center;
 	text-decoration: none;
 	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 	transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
+	align-items: center;
+	justify-content: center;
+}
+.timer-div {
+	width: 10vw;
+	left: 50vw;
+}
+.score-div {
+	width: 5vw;
+	left: 40vw;
+}
+.timer-text {
+	font-size: max(2vh, 18px);
 }
 .score{
 	width: 5%;
@@ -48,11 +59,19 @@
 	position: absolute;
 	top: 2.5%;
 }
+.infoContainer {
+    display: flex;
+    z-index: 1000;
+	position: absolute;
+    top: 15vh;
+    right: 1vw;
+	flex-direction: column;
+	width: auto;
+}
 .infoText{
 	color: yellow;
-	position: fixed;
-	transform-origin: top center;
 	font-size: 1.5vw;
+	text-align: right;
 }
 .messageContainer {
 	position: fixed;

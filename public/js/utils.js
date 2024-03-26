@@ -1,7 +1,10 @@
 ﻿//const confetti = require('canvas-confetti');
 export function removeAllChildren(element) {
     const children = Array.from(element.childNodes);
-    
+        if (children.length === 0) {
+        // No children to remove
+        return;
+    }
     for (const child of children) {
         if (child.nodeType === Node.ELEMENT_NODE) {
             // Remove element nodes
@@ -69,23 +72,23 @@ export function apparateTileToSpot(tileElement, outlineElement) {
 
 export function displayInfo (elmnt){
 	const infoContainer = document.getElementById('infoContainer');
-	const englishName = createInfoElement(0.5);
+	const englishName = createInfoElement();
 	englishName.textContent = elmnt.dataset.englishName;
 	if (elmnt.dataset.hasLatin === '1'){
-		const scientificName = createInfoElement(2.5);
+		const scientificName = createInfoElement();
 		scientificName.textContent = elmnt.dataset.latinName;
 	}
-	const atomicNumber = createInfoElement(4.5);
+	const atomicNumber = createInfoElement();
 	atomicNumber.textContent = 'Atomic Number: ' + elmnt.dataset.elementID;
-	const atomicMass = createInfoElement(6.5);
+	const atomicMass = createInfoElement();
 	atomicMass.textContent = 'Atomic Mass: ' + elmnt.dataset.am;
-	const category = createInfoElement(8.5);
+	const category = createInfoElement();
 	category.textContent = elmnt.dataset.category;
-	const state = createInfoElement(10.5);
+	const state = createInfoElement();
 	state.textContent = elmnt.dataset.state;
-	const year = createInfoElement(12.5);
+	const year = createInfoElement();
 	year.textContent = elmnt.dataset.discoveryYear;
-	const stableIsotopes = createInfoElement(14.5);
+	const stableIsotopes = createInfoElement();
 	if (elmnt.dataset.stableIsotopes === '0'){
 		stableIsotopes.textContent = 'No Stable Isotopes';
 	}
@@ -95,9 +98,9 @@ export function displayInfo (elmnt){
 		const isotopesText = 'Stable Isotopes: ' + superscriptedAtomicMasses.join(elmnt.dataset.symbol + ' ') + elmnt.dataset.symbol;
 		stableIsotopes.textContent = isotopesText;
 	}
-	const electronConfiguration = createInfoElement(16.5);
+	const electronConfiguration = createInfoElement();
 	electronConfiguration.textContent = convertDigitsToSuperscriptForElectronConfiguration(elmnt.dataset.electronConfiguration);
-	const meltingPoint = createInfoElement(18.5);
+	const meltingPoint = createInfoElement();
 	if (elmnt.dataset.meltingPoint === '-'){
 		meltingPoint.textContent = 'Melting Point Not Available';
 	}
@@ -107,25 +110,23 @@ export function displayInfo (elmnt){
 	else {
 		meltingPoint.textContent = 'Melting Point: ' + elmnt.dataset.meltingPoint + "°C";
 	}
-	const boilingPoint = createInfoElement(20.5);
+	const boilingPoint = createInfoElement();
 	if (elmnt.dataset.boilingPoint === '-'){
 		boilingPoint.textContent = 'Boiling Point Not Available';
 	}
 	else {
 		boilingPoint.textContent = 'Boiling Point: ' + elmnt.dataset.boilingPoint + "°C";
 	}
-	const period = createInfoElement(22.5);
+	const period = createInfoElement();
 	period.textContent = 'Period: ' + elmnt.dataset.period;
-	const block = createInfoElement(24.5);
+	const block = createInfoElement();
 	block.textContent = elmnt.dataset.block + '-block';
-	const sources = createInfoElement(26.5);
+	const sources = createInfoElement();
 	sources.textContent = elmnt.dataset.source.trim().replace(/ \+/g, ',');
-	function createInfoElement (topPosition){
+	function createInfoElement (){
 		const infoElement = document.createElement('div');
 		infoElement.classList.add('infoText');
 		infoContainer.append(infoElement);
-		infoElement.style.top = topPosition + 'vw';
-		infoElement.style.right = 1 + 'vw';
 		return infoElement;
 	}
 }
@@ -200,4 +201,32 @@ function getRandomColor() {
   const hexColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 
   return hexColor;
+}
+
+function setTilePosition(tileElement, currentTileNumber) {
+	const minimumTiles = 20;
+	const maximumTiles = 40;
+	let row = 0;
+	let column = ((currentTileNumber-1) % minimumTiles)* (85 / (minimumTiles - 1))+ 5;
+	let padding = 0;
+	if (currentTileNumber >= 1 && currentTileNumber <= minimumTiles) {
+		row = 1;
+	} else if (currentTileNumber >= minimumTiles + 1 && currentTileNumber <= minimumTiles * 2) {
+		row = 2;
+	} else if (currentTileNumber >= minimumTiles * 2 + 1 && currentTileNumber <= minimumTiles * 3) {
+		row = 3;
+	} else if (currentTileNumber >= minimumTiles * 3 + 1 && currentTileNumber <= minimumTiles * 4) {
+		row = 4;
+		padding = 2;
+	} else if (currentTileNumber >= minimumTiles * 4 + 1 && currentTileNumber <= minimumTiles * 5) {
+		row = 5;
+		padding = 2;
+	} else if (currentTileNumber >= minimumTiles * 5 + 1 && currentTileNumber <= minimumTiles * 6){
+		row = 6;
+		padding = 2;
+	} else {
+		row = Math.random() * (87.5 - 75) + 75;
+	}
+	tileElement.style.left = column + padding + 'vw';
+	tileElement.style.bottom = row + 5 + 'vw';
 }

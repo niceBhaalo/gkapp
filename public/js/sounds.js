@@ -1,24 +1,31 @@
 import { showSettings } from './settingswindow.js';
 
-let musicIsOn = 'off'; // Retrieve from local storage
+let musicIsOn = localStorage.getItem('musicPreference') === 'on'; // Retrieve from local storage
 let sfxIsOn = localStorage.getItem('sfxPreference') === 'on';     // Retrieve from local storage
+let userIsActive = false;
+
 
 const buttonPressElement = document.getElementById('sfxSoundButton');
 const tilePressElement = document.getElementById('sfxSoundTile');
 const tileSuccessElement = document.getElementById('sfxSuccess');
 const gameSuccessElement = document.getElementById('sfxComplete');
 const tileFailureElement = document.getElementById('sfxFailure');
+const waterSoundElement = document.getElementById('water');
 const settingsElement = document.getElementById('settings');
 
+tileSuccessElement.volume = 0.25;
+buttonPressElement.volume = 0.25;
+waterSoundElement.volume = 0.1;
+tileFailureElement.volume = 0.25;
+tilePressElement.volume = 0.25;
 export function setupSound(){
     const musicButton = document.getElementById('musicButton');
     const sfxButton = document.getElementById('sfxButton');
     const backgroundMusic = document.getElementById('backgroundMusic');
     createMusicIcon(musicButton);
     createSFXIcon(sfxButton);
-
     musicButton.addEventListener('click', function () {
-        musicIsOn = !musicIsOn; // Toggle the state
+        musicIsOn = !musicIsOn;
         updateIconState(musicButton, musicIsOn, 'music');
         localStorage.setItem('musicPreference', musicIsOn ? 'on' : 'off'); // Save to local storage
         if (musicIsOn){
@@ -29,24 +36,35 @@ export function setupSound(){
     });
 
     sfxButton.addEventListener('click', function () {
-        sfxIsOn = !sfxIsOn; // Toggle the state
+        sfxIsOn = !sfxIsOn;
         updateIconState(sfxButton, sfxIsOn, 'sfx');
-        localStorage.setItem('sfxPreference', sfxIsOn ? 'on' : 'off'); // Save to local storage
+        localStorage.setItem('sfxPreference', sfxIsOn ? 'on' : 'off');
     });
     setupSettings();
+    if (musicIsOn) {
+        document.addEventListener('mousedown', playBackgroundMusic);
+        document.addEventListener('keydown', playBackgroundMusic);
+    }
+
+    function playBackgroundMusic () {
+        if (musicIsOn){
+            backgroundMusic.play();
+        } else {
+            backgroundMusic.pause();
+        }
+        document.addEventListener('keydown', playBackgroundMusic);
+        document.removeEventListener('mousemove', playBackgroundMusic);
+    }
 }
 function createMusicIcon(button) {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute('class', 'music-icon');
     svg.setAttribute('id', 'musicsvg');
-
     const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
     use.setAttribute('class', 'centered-icon');
-
     svg.appendChild(use);
-
     button.appendChild(svg);
-    updateIconState(button, false, 'music'); // Set the initial state
+    updateIconState(button, musicIsOn, 'music'); // Set the initial state
 }
 function createSFXIcon(button) {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -59,7 +77,7 @@ function createSFXIcon(button) {
     svg.appendChild(use);
 
     button.appendChild(svg);
-    updateIconState(button, true, 'sfx'); // Set the initial state
+    updateIconState(button, sfxIsOn, 'sfx'); // Set the initial state
 }
 
 function setupSettings(){
@@ -108,5 +126,11 @@ export function gameCompleteSound(){
 export function tileFailureSound(){
     if(sfxIsOn){
         tileFailureElement.play();
+    }
+}
+export function waterSound(){
+    waterSoundElement.currentTime = 0;
+    if(sfxIsOn){
+        waterSoundElement.play();
     }
 }

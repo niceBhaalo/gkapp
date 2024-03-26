@@ -1,19 +1,56 @@
 .jugContainer {
 	display: flex;
 	flex-direction: row;
-	width: 90vw;
-	height: 90vh;
+	position: absolute;
+	bottom: 15vh;
+	height: 70vh;
+	left: 50%;
+	transform: translateX(-50%);
+}
+.topDiv {
+	display: flex;
+	flex-direction: column;
 }
 .stepText {
 	color: pink;
 	font-size: 2vw;
+}
+.stepBlock{
+	position: absolute;
+	bottom: 1vh;
+	left: 1vw;
+}
+.targetBlock {
+	position: absolute;
+	top: 1vh;
+	left: 50%;
+	transform: translateX(-50%);
+    text-align: center;
+	width: 50vw;
+}
+.firstLine, .secondLine, thirdLine {
+    display: inline-block;
+}
+.targetText {
+	color: pink;
+	font-size: 2vw;
+}
+.litreText {
+	color: pink;
+	font-size: 2vw;
 	align: center;
+	padding: 5px;
+}
+.stepNumber {
+	color: pink;
+	font-size: 2vw;
 }
 .jug {
 	display: flex;
 	flex-direction: column;
 	width: 15vw;
 	align-items: center;
+	justify-content: flex-end;
 }
 .jugButton {
 	color: black;
@@ -23,29 +60,48 @@
 	border: 2px solid black;
 	border-radius: 5px;
 	width: 5vw;
-	height: 3vw;
+	height: 5vh;
 
 }
 .jugButton:active {
 	background-color: #999;
 }
 .jugSpace {
-	height: 20vw;
+	height: 20vh;
 	width: 8vw;
 	visibility: hidden;
 	position: relative;
 }
 .jugIcon {
-	display: flex;
-    position: absolute;
-    border-width: 0 5px 5px 5px; 
+    display: flex;
+    position: relative;
+    border-width: 0 10px 10px 10px; 
     border-style: none solid solid solid; 
     border-color: transparent white white white; 
-    background-color: grey;
-    bottom: 0;
-	height: 100%;
-	width: 100%;
-	visibility: visible;
+    background-color: none;
+    bottom: 3vh;
+    height: 100%;
+    width: 100%;
+    visibility: visible;
+	border-radius: 0 0 10px 10px;
+}
+.jugIcon::before,
+.jugIcon::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    width: 10px; /* Adjust the width of the rounded corner */
+    height: 10px; /* Adjust the height of the rounded corner */
+    background-color: white; /* Adjust the color of the rounded corner */
+    border-radius: 50%; /* Use a border-radius of 50% to create a circle */
+}
+
+.jugIcon::before {
+    left: -10px;
+}
+
+.jugIcon::after {
+    right: -10px;
 }
 .waterFill {
 	display: flex;
@@ -53,11 +109,17 @@
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	background-color: blue;
+	background-color: #4481e3;
 	height: 0%; /* Start with no water */
 	
 }
-
+.jugBack {
+	height: calc(100% - 0.5vh);
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	background-color: grey;
+}
 .jugText {
 	display: flex;
 	position: absolute;
@@ -90,19 +152,112 @@
     height: 0%; /* Adjust as needed */
   }
 }
-
+.navButtons {
+	right: 1vw;
+	bottom: 1vw;
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+}
 .resetButton2 {
 	background-color: #4CAF50;
 	color: white;
 	padding: 0px;
 	text-align: center;
 	text-decoration: none;
-	position: absolute;
 	font-size: 1 rem;
 	cursor: pointer;
-	margin-left: auto;
 	height: 5vh;
 	width: 10vw;
-	right: 1vw;
+
+}
+.levelSelect {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #333;
+  border: 2px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #fff;
+  width: 200px;
+  animation: none; /* Add animation */
+
+}
+
+.levelSelect option {
+  color: #fff;
+  background-color: #333;
+}
+
+.levelSelect:hover {
+  border-color: #999;
+}
+
+.levelSelect:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.levelSelectText {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  margin-right: 10px; /* Add some spacing between the text and the select element */
+}
+
+.levelSelectDiv {
+	position: absolute;
+	height: 3vw;
+	padding: 5px;
+	left: 1vw;
+	top: 1vw;
+	width: 20vw;
+}
+.glowing {
+	animation: glow-border 1s infinite alternate;
+}
+@keyframes glow-border {
+  0% {
+    border-color: #ccc;
+  }
+  100% {
+    border-color: #ff0000; /* Change border color to red for glowing effect */
+  }
+}
+.victoryIconsDiv {
+	height: 10vh;
+	position: absolute;
 	bottom: 1vw;
+	left: 50%;
+	transform: translateX(-50%);
+}
+.victoryIcon {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	width: 10vh;
+	padding: 0px 8px 0px 0px;
+}
+.dimmedVictory {
+	filter: grayscale(100%);
+	opacity: 30%;
+}
+.borrowedSVG {
+	position: absolute;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	top: 100%;
+}
+.nextLevelDiv {
+	position: absolute;
+	top: 25vh;
+	left: 50%;
+	transform: translateX(-50%);
 }

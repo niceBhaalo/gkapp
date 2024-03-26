@@ -25,3 +25,16 @@
 }
 
 
+.jugIcon {
+	display: flex;
+    position: absolute;
+    border-width: 0 5px 5px 5px; 
+    border-style: none solid solid solid; 
+    border-color: transparent white white white; 
+    background-color: none;
+    bottom: 0;
+	height: 100%;
+	width: 100%;
+	visibility: visible;
+	border-radius: -10px -10px 0 0;
+}
